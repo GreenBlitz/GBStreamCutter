@@ -80,7 +80,7 @@ class EndRecorder(StreamRecorder):
 class StartRecorder():
     def __init__(self, stream_url):
         """
-        Recorder that is taking signal only at the end of the game and then dumps the buffer desired time backwards
+        Recorder that is taking signal at the start of the game and then records the game with the extra time
 
         :param stream_url: stream_url taken from helper function
         """
