@@ -1,2 +1,2 @@
 streamlink
-requests
+gbvision
