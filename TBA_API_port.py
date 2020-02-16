@@ -16,13 +16,16 @@ def get_teams_in_game(event_key):
     data = get_game(event_key).json()
     matches = {}
     for i in range(len(data)):
-        teams = []
+        red_teams = []
+        blue_teams = []
         for team in data[i]["alliances"]["red"]["team_keys"]:
-            teams.append(get_team_by_key(team))
+            red_teams.append(get_team_by_key(team)["nickname"])
         for team in data[i]["alliances"]["blue"]["team_keys"]:
-            teams.append(get_team_by_key(team))
-        print(teams)
-        matches[f"match{i}"] = teams
+            blue_teams.append(get_team_by_key(team)["nickname"])
+        if i > 6:
+            break
+        matches[f"match{i}"] = {"red" : red_teams, "blue" : blue_teams}
+    return matches
 
 
 def main():
