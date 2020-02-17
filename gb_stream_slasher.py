@@ -1,13 +1,16 @@
 import cv2
+import time
 import gbvision as gbv
 import streamlink as sl
 from collections import deque
 import abc
 
+YOUTUBE_ID = None
+TWITCH_ID = 'testingthetestin'
+
 FPS = 30
 MATCH_TIME = 2.5 * 60
 extra_time = 10
-
 
 THRESHOLD = gbv.ColorThreshold([[0, 22], [0, 20], [234, 255]], 'BGR')
 
@@ -19,7 +22,7 @@ class StreamNotFound(Exception):
     pass
 
 
-def get_stream_url(twitch_id='firstinspires', youtube_id=None, quality='480p'):
+def get_stream_url(twitch_id=TWITCH_ID, youtube_id=YOUTUBE_ID, quality='480p'):
     """
     get stream url by twitch id or youtube video id (NOT URL)
 
@@ -30,7 +33,7 @@ def get_stream_url(twitch_id='firstinspires', youtube_id=None, quality='480p'):
     :return: video stream url, -1 if stream not found
     """
     if youtube_id is not None:  # we are using youtube
-        stream_url = f'https://www.youtube.com/watch?{youtube_id}'
+        stream_url = f'https://www.youtube.com/watch?v={youtube_id}'
 
     else:  # we are using twitch
         stream_url = f'https://www.twitch.tv/{twitch_id}'
@@ -76,6 +79,10 @@ class StreamRecorder(abc.ABC):
                         self.status, self.frame = self.stream.read()
                         self.recorder.record(self.frame)
                     break
+            else:
+                print('status not')
+                self.stream = gbv.USBCamera(get_stream_url())
+                self.status, self.frame = self.stream.read()
 
 
 class EndRecorder(StreamRecorder):
@@ -90,8 +97,8 @@ class EndRecorder(StreamRecorder):
     def trigger(self):
         new_frame = gbv.crop(self.frame, 522, 618, 78, 17)
         after_threshold = THRESHOLD(new_frame)
-        print (after_threshold)
         if after_threshold.min() == 255:
+            print('yeah')
             return True
         return False
 
@@ -112,10 +119,13 @@ class StartRecorder(StreamRecorder):
 def main():
     i = 0
     while True:
-        recorder = EndRecorder('match.mp4', f'match{i}')
+        recorder = EndRecorder(get_stream_url(quality='best'), f'match{i}')
         recorder.run()
+        while recorder.trigger():
+            time.sleep(1)
         i += 1
         del recorder
+
 
 
 if __name__ == '__main__':
