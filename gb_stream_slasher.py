@@ -95,8 +95,12 @@ class EndRecorder(StreamRecorder):
         super().__init__(int((MATCH_TIME + extra_time) * FPS), int(extra_time * FPS), stream_url, filename)
 
     def trigger(self):
-        new_frame = gbv.crop(self.frame, 522, 618, 78, 17)
+        new_frame = gbv.crop(self.frame,
+                             int(0.416 * self.stream.get_width()),
+                             int(0.852 * self.stream.get_height()),
+                             40, 23)
         after_threshold = THRESHOLD(new_frame)
+        print(after_threshold)
         if after_threshold.min() == 255:
             print('yeah')
             return True
@@ -119,7 +123,7 @@ class StartRecorder(StreamRecorder):
 def main():
     i = 0
     while True:
-        recorder = EndRecorder(get_stream_url(quality='best'), f'match{i}')
+        recorder = EndRecorder('match.mp4', f'match{i}')
         recorder.run()
         while recorder.trigger():
             time.sleep(1)
