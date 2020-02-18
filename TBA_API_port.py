@@ -17,9 +17,9 @@ def get_teams_in_game(event_key):
     red_teams = []
     blue_teams = []
     for team in data["alliances"]["red"]["team_keys"]:
-        red_teams.append(get_team_by_key(team)["nickname"])
+        red_teams.append(int(team[3:]))
     for team in data["alliances"]["blue"]["team_keys"]:
-        blue_teams.append(get_team_by_key(team)["nickname"])
+        blue_teams.append(int(team[3:]))
     return [red_teams, blue_teams]
 
 
