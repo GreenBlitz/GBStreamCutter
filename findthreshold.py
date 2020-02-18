@@ -8,7 +8,7 @@ stdv = 20
 
 
 def main():
-    frame = cv2.imread('layout.jpeg')
+    frame = cv2.imread('layout2.png')
     cv2.imshow("name", frame)
 
 

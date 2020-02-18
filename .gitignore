@@ -190,3 +190,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+#my files
+video/
+comp/
+match.mp4

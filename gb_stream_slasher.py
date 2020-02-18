@@ -12,7 +12,7 @@ FPS = 30
 MATCH_TIME = 2.5 * 60
 extra_time = 10
 
-THRESHOLD = gbv.ColorThreshold([[0, 22], [0, 20], [234, 255]], 'BGR')
+THRESHOLD = gbv.ColorThreshold([[28, 68], [27, 67], [214, 254]], 'BGR')
 
 
 class StreamNotFound(Exception):
@@ -96,13 +96,12 @@ class EndRecorder(StreamRecorder):
 
     def trigger(self):
         new_frame = gbv.crop(self.frame,
-                             int(0.416 * self.stream.get_width()),
+                             int(0.411 * self.stream.get_width()),
                              int(0.852 * self.stream.get_height()),
-                             40, 23)
+                             50, 15) #THIS IS VALID FOR 480P ONLY
         after_threshold = THRESHOLD(new_frame)
-        print(after_threshold)
-        if after_threshold.min() == 255:
-            print('yeah')
+        if after_threshold.min()== 255:
+            print('Found match')
             return True
         return False
 
@@ -121,9 +120,9 @@ class StartRecorder(StreamRecorder):
 
 
 def main():
-    i = 0
+    i = 1
     while True:
-        recorder = EndRecorder('match.mp4', f'match{i}')
+        recorder = EndRecorder(get_stream_url(), f'match{i}')
         recorder.run()
         while recorder.trigger():
             time.sleep(1)
